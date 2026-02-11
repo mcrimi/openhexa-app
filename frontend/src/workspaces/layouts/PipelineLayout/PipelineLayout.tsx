@@ -1,8 +1,9 @@
 import { gql } from "@apollo/client";
-import { PlayIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PlayIcon, SparklesIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Breadcrumbs from "core/components/Breadcrumbs";
 import Button from "core/components/Button";
 import { useMemo, useState } from "react";
+import PipelineAssistantDrawer from "workspaces/features/PipelineAssistantDrawer";
 import { useTranslation } from "next-i18next";
 import DownloadPipelineVersion from "pipelines/features/DownloadPipelineVersion";
 import Spinner from "core/components/Spinner";
@@ -42,6 +43,7 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
     useState(false);
   const [isDeletePipelineDialogOpen, setDeletePipelineDialogOpen] =
     useState(false);
+  const [isAssistantOpen, setAssistantOpen] = useState(false);
 
   const createTemplateVersionReasonMessages = useMemo(() => {
     const reasonMessages = {
@@ -136,6 +138,14 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
       }
       headerActions={
         <div className="flex items-center gap-2">
+          <Button
+            onClick={() => setAssistantOpen(true)}
+            variant="white"
+            leadingIcon={<SparklesIcon className="w-4" />}
+            className="whitespace-nowrap"
+          >
+            {t("AI Assistant")}
+          </Button>
           <>
             <Tooltip
               label={
@@ -213,6 +223,14 @@ const PipelineLayout = (props: PipelineLayoutProps) => {
         onClose={() => setPublishPipelineDialogOpen(false)}
         pipeline={pipeline}
         workspace={workspace}
+      />
+      <PipelineAssistantDrawer
+        open={isAssistantOpen}
+        onClose={() => setAssistantOpen(false)}
+        context={{
+          pipelineName: pipeline.name ?? undefined,
+          pipelineCode: pipeline.code,
+        }}
       />
     </TabLayout>
   );

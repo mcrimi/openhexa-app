@@ -44,3 +44,11 @@ it("renders existing messages", () => {
   expect(screen.getByText("Hello")).toBeInTheDocument();
   expect(screen.getByText("Hi there")).toBeInTheDocument();
 });
+
+it("sends on Enter key without Shift", async () => {
+  const user = userEvent.setup();
+  const onSend = jest.fn();
+  render(<TestApp><AIChatPanel messages={[]} onSend={onSend} /></TestApp>);
+  await user.type(screen.getByRole("textbox"), "hello{Enter}");
+  expect(onSend).toHaveBeenCalledWith("hello");
+});

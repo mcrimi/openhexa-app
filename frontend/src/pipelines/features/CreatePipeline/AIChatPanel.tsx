@@ -32,7 +32,7 @@ const AIChatPanel = ({ messages, onSend }: Props) => {
       <div className="flex-1 overflow-y-auto space-y-3 p-4">
         {messages.map((msg, idx) => (
           <div
-            key={idx}
+            key={`${msg.role}-${idx}-${msg.content.slice(0, 20)}`}
             className={
               msg.role === "user" ? "flex justify-end" : "flex justify-start"
             }

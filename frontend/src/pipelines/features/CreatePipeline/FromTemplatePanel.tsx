@@ -11,10 +11,10 @@ type Props = {
 const FromTemplatePanel = ({ workspace, onBack }: Props) => {
   const { t } = useTranslation();
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 px-4 pt-4">
       <button
         onClick={onBack}
-        className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 px-4 pt-4"
+        className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
       >
         <ArrowLeftIcon className="h-4 w-4" />
         {t("Back")}

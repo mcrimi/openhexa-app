@@ -3,7 +3,7 @@ import Button from "core/components/Button";
 import Field from "core/components/forms/Field";
 import Select from "core/components/forms/Select";
 import useForm from "core/hooks/useForm";
-import { BucketObjectType, PipelineFunctionalType } from "graphql/types";
+import { BucketObject, BucketObjectType, PipelineFunctionalType } from "graphql/types";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useCreatePipelineMutation } from "workspaces/graphql/mutations.generated";
@@ -24,14 +24,14 @@ const FromNotebookPanel = ({ workspace, onBack }: Props) => {
   const form = useForm<{
     name: string;
     functionalType: PipelineFunctionalType | null;
-    notebookObject: any;
+    notebookObject: BucketObject | null;
   }>({
     onSubmit: async (values) => {
       const { data } = await mutate({
         variables: {
           input: {
             name: values.name,
-            notebookPath: values.notebookObject.key,
+            notebookPath: values.notebookObject!.key,
             workspaceSlug: workspace.slug,
             functionalType: values.functionalType,
           },
@@ -48,22 +48,24 @@ const FromNotebookPanel = ({ workspace, onBack }: Props) => {
       }
     },
     validate(values) {
-      const errors: any = {};
+      const errors: Partial<Record<"notebookObject" | "name" | "functionalType", string>> = {};
       if (!values.notebookObject) {
         errors.notebookObject = t("You have to select a notebook");
       }
-      return errors;
+      return errors as Record<"notebookObject" | "name" | "functionalType", string>;
     },
   });
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <Button variant="white" onClick={onBack} leadingIcon={<ArrowLeftIcon className="h-4 w-4" />}>
-          {t("Back")}
-        </Button>
-        <h2 className="text-lg font-medium">{t("Create from Notebook")}</h2>
-      </div>
+      <button
+        onClick={onBack}
+        className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
+      >
+        <ArrowLeftIcon className="h-4 w-4" />
+        {t("Back")}
+      </button>
+      <h2 className="text-lg font-medium">{t("Create from Notebook")}</h2>
       <p className="mb-6">
         {t(
           "You can use a Notebook from the workspace file system to be run as a pipeline. This is the easiest way to create a pipeline. Keep in my mind that Notebooks are not versioned. If a user changes the notebook, the pipeline will be updated.",
@@ -109,7 +111,7 @@ const FromNotebookPanel = ({ workspace, onBack }: Props) => {
           >
             <BucketObjectPicker
               onChange={(value) => form.setFieldValue("notebookObject", value)}
-              value={form.formData.notebookObject?.key}
+              value={form.formData.notebookObject?.key ?? null}
               exclude={(item) =>
                 item.type === BucketObjectType.File &&
                 !item.name.endsWith(".ipynb")

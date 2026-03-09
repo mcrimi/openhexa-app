@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import JSZip from "jszip";
 import { WorkspaceLayout_WorkspaceFragment } from "workspaces/layouts/WorkspaceLayout/WorkspaceLayout.generated";
 import { FilesEditor } from "workspaces/features/FilesEditor";
+import { FilesEditor_FileFragment } from "workspaces/features/FilesEditor/FilesEditor.generated";
 import { FileType } from "graphql/types";
 import AIChatPanel, { ChatMessage } from "./AIChatPanel";
 import {
@@ -23,17 +24,17 @@ def my_task():
     print("Hello from OpenHEXA!")
 `;
 
-const DEFAULT_FILES = [
+const DEFAULT_FILES: FilesEditor_FileFragment[] = [
   {
     id: "pipeline.py",
-    name: "pipeline.py",
     path: "pipeline.py",
+    name: "pipeline.py",
     type: FileType.File,
     content: DEFAULT_PIPELINE_CODE,
     parentId: null,
     autoSelect: true,
     language: "python",
-    lineCount: DEFAULT_PIPELINE_CODE.split("\n").length,
+    lineCount: null,
   },
 ];
 
@@ -108,27 +109,31 @@ const CodeCreationPanel = ({ workspace, entryMode, onBack }: Props) => {
 
       if (!createResult.data?.createPipeline?.success || !pipelineCode) {
         setError("Failed to create pipeline");
-        setIsCreating(false);
         return;
       }
 
       const zip = new JSZip();
       zip.file("pipeline.py", currentCode);
-      const zipBlob = await zip.generateAsync({ type: "base64" });
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve((reader.result as string).split(",")[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(zipBlob);
+      });
 
       const uploadResult = await uploadPipeline({
         variables: {
           input: {
             workspaceSlug: workspace.slug,
             pipelineCode,
-            zipfile: zipBlob,
+            zipfile: base64,
           },
         },
       });
 
       if (!uploadResult.data?.uploadPipeline?.success) {
         setError("Failed to upload pipeline code");
-        setIsCreating(false);
         return;
       }
 
@@ -137,6 +142,7 @@ const CodeCreationPanel = ({ workspace, entryMode, onBack }: Props) => {
       );
     } catch {
       setError("An unexpected error occurred");
+    } finally {
       setIsCreating(false);
     }
   };
@@ -202,7 +208,7 @@ const CodeCreationPanel = ({ workspace, entryMode, onBack }: Props) => {
         <div className="flex-1 overflow-hidden p-4">
           <FilesEditor
             name="pipeline"
-            files={DEFAULT_FILES as any}
+            files={DEFAULT_FILES}
             isEditable={true}
             onSave={handleSave}
           />

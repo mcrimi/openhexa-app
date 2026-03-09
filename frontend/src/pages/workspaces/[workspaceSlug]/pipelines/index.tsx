@@ -12,11 +12,10 @@ import {
 import { PipelineFunctionalType } from "graphql/types";
 import { useRouter } from "next/router";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
-import React, { useState } from "react";
+import React from "react";
 import Tabs from "core/components/Tabs";
 import PipelineTemplates from "pipelines/features/PipelineTemplates";
 import Pipelines from "pipelines/features/Pipelines/Pipelines";
-import CreatePipelineDialog from "workspaces/features/CreatePipelineDialog";
 import { WorkspaceLayout_WorkspaceFragment } from "workspaces/layouts/WorkspaceLayout/WorkspaceLayout.generated";
 
 type Props = {
@@ -36,7 +35,6 @@ const WorkspacePipelinesPage: NextPageWithLayout = ({
 }: Props) => {
   const { t } = useTranslation();
   const router = useRouter();
-  const [isDialogOpen, setDialogOpen] = useState(false);
 
   const tab = router.query.tab === "templates" ? "templates" : "pipelines";
 
@@ -74,7 +72,7 @@ const WorkspacePipelinesPage: NextPageWithLayout = ({
           workspace.permissions.update && (
             <Button
               leadingIcon={<PlusIcon className="h-4 w-4" />}
-              onClick={() => setDialogOpen(true)}
+              onClick={() => router.push(`/workspaces/${encodeURIComponent(workspace.slug)}/pipelines/new`)}
             >
               {t("Create")}
             </Button>
@@ -116,11 +114,6 @@ const WorkspacePipelinesPage: NextPageWithLayout = ({
           </Tabs>
         </WorkspaceLayout.PageContent>
       </WorkspaceLayout>
-      <CreatePipelineDialog
-        workspace={workspace}
-        open={isDialogOpen}
-        onClose={() => setDialogOpen(false)}
-      />
     </Page>
   );
 };

@@ -1,5 +1,7 @@
+import { WorkspaceLayout_WorkspaceFragment } from "workspaces/layouts/WorkspaceLayout/WorkspaceLayout.generated";
+
 type Props = {
-  workspace: any;
+  workspace: WorkspaceLayout_WorkspaceFragment;
   onBack: () => void;
 };
 

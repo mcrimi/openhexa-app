@@ -55,3 +55,24 @@ it("clicking 'Create' transitions away from the cards", async () => {
 
   expect(screen.queryByText("From Template")).not.toBeInTheDocument();
 });
+
+it("clicking 'From Template' transitions away from the cards", async () => {
+  const user = userEvent.setup();
+  render(<TestApp><SelectionScreen workspace={WORKSPACE as any} /></TestApp>);
+  await user.click(screen.getByText("From Template"));
+  expect(screen.queryByText("How do you want to create your pipeline?")).not.toBeInTheDocument();
+});
+
+it("clicking 'From Notebook' transitions away from the cards", async () => {
+  const user = userEvent.setup();
+  render(<TestApp><SelectionScreen workspace={WORKSPACE as any} /></TestApp>);
+  await user.click(screen.getByText("From Notebook"));
+  expect(screen.queryByText("How do you want to create your pipeline?")).not.toBeInTheDocument();
+});
+
+it("clicking 'Set up the CLI' transitions away from the cards", async () => {
+  const user = userEvent.setup();
+  render(<TestApp><SelectionScreen workspace={WORKSPACE as any} /></TestApp>);
+  await user.click(screen.getByText(/Set up the CLI/));
+  expect(screen.queryByText("How do you want to create your pipeline?")).not.toBeInTheDocument();
+});

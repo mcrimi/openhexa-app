@@ -8,7 +8,6 @@ jest.mock(
     __esModule: true,
     default: () => <div>How do you want to create your pipeline?</div>,
   }),
-  { virtual: true },
 );
 
 jest.mock("workspaces/layouts/WorkspaceLayout", () => {

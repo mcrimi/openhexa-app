@@ -3,8 +3,8 @@ import { createGetServerSideProps } from "core/helpers/page";
 import { NextPageWithLayout } from "core/helpers/types";
 import { useTranslation } from "next-i18next";
 import {
-  WorkspacePipelinesPageDocument,
-  WorkspacePipelinesPageQuery,
+  WorkspacePageDocument,
+  WorkspacePageQuery,
 } from "workspaces/graphql/queries.generated";
 import WorkspaceLayout from "workspaces/layouts/WorkspaceLayout";
 import { WorkspaceLayout_WorkspaceFragment } from "workspaces/layouts/WorkspaceLayout/WorkspaceLayout.generated";
@@ -41,15 +41,9 @@ export const getServerSideProps = createGetServerSideProps({
 
     await WorkspaceLayout.prefetch(ctx, client);
 
-    const { data } = await client.query<WorkspacePipelinesPageQuery>({
-      query: WorkspacePipelinesPageDocument,
-      variables: {
-        workspaceSlug,
-        page: 1,
-        perPage: 1,
-        search: "",
-        functionalType: null,
-      },
+    const { data } = await client.query<WorkspacePageQuery>({
+      query: WorkspacePageDocument,
+      variables: { slug: workspaceSlug },
     });
 
     if (!data.workspace) {

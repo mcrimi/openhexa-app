@@ -44,7 +44,6 @@ query WorkspacePipelinesPage(
     pipelineTags
     pipelineLastRunStatuses
     ...WorkspaceLayout_workspace
-    ...CreatePipelineDialog_workspace
   }
 
   pipelines(

@@ -4,7 +4,6 @@ import { gql } from '@apollo/client';
 import { ArchiveWorkspace_WorkspaceFragmentDoc } from '../features/ArchiveWorkspaceDialog/ArchiveWorkspaceDialog.generated';
 import { InviteMemberWorkspace_WorkspaceFragmentDoc } from '../features/InviteMemberDialog/InviteMemberDialog.generated';
 import { WorkspaceLayout_WorkspaceFragmentDoc } from '../layouts/WorkspaceLayout/WorkspaceLayout.generated';
-import { CreatePipelineDialog_WorkspaceFragmentDoc } from '../features/CreatePipelineDialog/CreatePipelineDialog.generated';
 import { PipelineCard_PipelineFragmentDoc } from '../features/PipelineCard/PipelineCard.generated';
 import { Tag_TagFragmentDoc } from '../../core/features/Tag.generated';
 import { User_UserFragmentDoc } from '../../core/features/User/User.generated';
@@ -425,7 +424,6 @@ export const WorkspacePipelinesPageDocument = gql`
     pipelineTags
     pipelineLastRunStatuses
     ...WorkspaceLayout_workspace
-    ...CreatePipelineDialog_workspace
   }
   pipelines(
     workspaceSlug: $workspaceSlug
@@ -445,7 +443,6 @@ export const WorkspacePipelinesPageDocument = gql`
   }
 }
     ${WorkspaceLayout_WorkspaceFragmentDoc}
-${CreatePipelineDialog_WorkspaceFragmentDoc}
 ${PipelineCard_PipelineFragmentDoc}`;
 
 /**

@@ -96,6 +96,7 @@ const AIChatPanel = ({
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerQuery, setPickerQuery] = useState("");
   const atIndexRef = useRef<number>(-1);
+  const pickerQueryLengthRef = useRef<number>(0);
   const [view, setView] = useState<View>("chat");
   const [pastConversations, setPastConversations] = useState<StoredConversation[]>([]);
   const [selectedConv, setSelectedConv] = useState<StoredConversation | null>(null);
@@ -137,6 +138,7 @@ const AIChatPanel = ({
       if (!afterAt.includes(" ")) {
         atIndexRef.current = atIdx;
         setPickerQuery(afterAt);
+        pickerQueryLengthRef.current = afterAt.length;
         setPickerOpen(true);
       } else {
         setPickerOpen(false);
@@ -157,6 +159,7 @@ const AIChatPanel = ({
     });
     setPickerOpen(false);
     setPickerQuery("");
+    pickerQueryLengthRef.current = 0;
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -304,8 +307,10 @@ const AIChatPanel = ({
                     setInput(
                       (prev) =>
                         prev.slice(0, atIndexRef.current) +
-                        prev.slice(atIndexRef.current + 1 + pickerQuery.length),
+                        prev.slice(atIndexRef.current + 1 + pickerQueryLengthRef.current),
                     );
+                    setPickerQuery("");
+                    pickerQueryLengthRef.current = 0;
                   }}
                 />
               </div>

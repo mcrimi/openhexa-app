@@ -142,10 +142,6 @@ const WorkspacePipelineCodePage: NextPageWithLayout = (props: Props) => {
   };
 
   const handleAISend = (message: string, mentions: ArtifactMention[]) => {
-    const contextPrefix = mentions.length > 0
-      ? `[Context: ${mentions.map((m) => m.ref).join(", ")}]\n`
-      : "";
-    void contextPrefix; // used for actual AI call in future
     setAiMessages((prev) => [...prev, { role: "user", content: message }]);
     setIsAITyping(true);
     setTimeout(() => {

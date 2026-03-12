@@ -14,14 +14,21 @@ type Props = {
   onClose: () => void;
 };
 
-const TABS: { id: Tab; label: string; Icon: React.ElementType }[] = [
-  { id: "dataset", label: "Datasets", Icon: CircleStackIcon },
-  { id: "file",    label: "Files",    Icon: DocumentIcon },
-  { id: "table",   label: "Tables",   Icon: TableCellsIcon },
+const TABS: { id: Tab; Icon: React.ElementType }[] = [
+  { id: "dataset", Icon: CircleStackIcon },
+  { id: "file",    Icon: DocumentIcon },
+  { id: "table",   Icon: TableCellsIcon },
 ];
 
 const ArtifactMentionPicker = ({ workspaceSlug, query, onSelect, onClose }: Props) => {
   const { t } = useTranslation();
+
+  const TAB_LABELS: Record<Tab, string> = {
+    dataset: t("Datasets"),
+    file: t("Files"),
+    table: t("Tables"),
+  };
+
   const [activeTab, setActiveTab] = useState<Tab>("dataset");
   const [keyboardIdx, setKeyboardIdx] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -100,7 +107,7 @@ const ArtifactMentionPicker = ({ workspaceSlug, query, onSelect, onClose }: Prop
     return () => window.removeEventListener("keydown", handler);
   }, [items, keyboardIdx, onClose, onSelect]);
 
-  useEffect(() => { setKeyboardIdx(0); }, [items.length]);
+  useEffect(() => { setKeyboardIdx(0); }, [query, activeTab]);
 
   return (
     <div
@@ -108,7 +115,7 @@ const ArtifactMentionPicker = ({ workspaceSlug, query, onSelect, onClose }: Prop
       className="w-full rounded-xl border border-gray-200 bg-white shadow-lg"
     >
       <div className="flex border-b border-gray-100">
-        {TABS.map(({ id, label, Icon }) => (
+        {TABS.map(({ id, Icon }) => (
           <button
             key={id}
             role="tab"
@@ -121,7 +128,7 @@ const ArtifactMentionPicker = ({ workspaceSlug, query, onSelect, onClose }: Prop
             }`}
           >
             <Icon className="h-3.5 w-3.5" />
-            {t(label)}
+            {TAB_LABELS[id]}
           </button>
         ))}
       </div>

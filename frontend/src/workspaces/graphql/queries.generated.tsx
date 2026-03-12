@@ -315,6 +315,21 @@ export type WorkspaceConnectionPickerQueryVariables = Types.Exact<{
 
 export type WorkspaceConnectionPickerQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', slug: string, connections: Array<{ __typename?: 'CustomConnection', id: string, name: string, slug: string, type: Types.ConnectionType } | { __typename?: 'DHIS2Connection', id: string, name: string, slug: string, type: Types.ConnectionType } | { __typename?: 'GCSConnection', id: string, name: string, slug: string, type: Types.ConnectionType } | { __typename?: 'IASOConnection', id: string, name: string, slug: string, type: Types.ConnectionType } | { __typename?: 'PostgreSQLConnection', id: string, name: string, slug: string, type: Types.ConnectionType } | { __typename?: 'S3Connection', id: string, name: string, slug: string, type: Types.ConnectionType }> } | null };
 
+export type ArtifactFilesQueryVariables = Types.Exact<{
+  workspaceSlug: Types.Scalars['String']['input'];
+  query?: Types.InputMaybe<Types.Scalars['String']['input']>;
+}>;
+
+
+export type ArtifactFilesQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', bucket: { __typename?: 'Bucket', objects: { __typename?: 'BucketObjectPage', items: Array<{ __typename?: 'BucketObject', key: string, name: string, path: string, type: Types.BucketObjectType, size?: any | null }> } } } | null };
+
+export type ArtifactTablesQueryVariables = Types.Exact<{
+  workspaceSlug: Types.Scalars['String']['input'];
+}>;
+
+
+export type ArtifactTablesQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', database: { __typename?: 'Database', tables: { __typename?: 'DatabaseTablePage', items: Array<{ __typename?: 'DatabaseTable', name: string, count?: number | null }> } } } | null };
+
 
 export const WorkspacesPageDocument = gql`
     query WorkspacesPage {
@@ -2260,3 +2275,101 @@ export type WorkspaceConnectionPickerQueryHookResult = ReturnType<typeof useWork
 export type WorkspaceConnectionPickerLazyQueryHookResult = ReturnType<typeof useWorkspaceConnectionPickerLazyQuery>;
 export type WorkspaceConnectionPickerSuspenseQueryHookResult = ReturnType<typeof useWorkspaceConnectionPickerSuspenseQuery>;
 export type WorkspaceConnectionPickerQueryResult = Apollo.QueryResult<WorkspaceConnectionPickerQuery, WorkspaceConnectionPickerQueryVariables>;
+export const ArtifactFilesDocument = gql`
+    query ArtifactFiles($workspaceSlug: String!, $query: String) {
+  workspace(slug: $workspaceSlug) {
+    bucket {
+      objects(page: 1, prefix: "", perPage: 50, query: $query) {
+        items {
+          key
+          name
+          path
+          type
+          size
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useArtifactFilesQuery__
+ *
+ * To run a query within a React component, call `useArtifactFilesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useArtifactFilesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useArtifactFilesQuery({
+ *   variables: {
+ *      workspaceSlug: // value for 'workspaceSlug'
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useArtifactFilesQuery(baseOptions: Apollo.QueryHookOptions<ArtifactFilesQuery, ArtifactFilesQueryVariables> & ({ variables: ArtifactFilesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ArtifactFilesQuery, ArtifactFilesQueryVariables>(ArtifactFilesDocument, options);
+      }
+export function useArtifactFilesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ArtifactFilesQuery, ArtifactFilesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ArtifactFilesQuery, ArtifactFilesQueryVariables>(ArtifactFilesDocument, options);
+        }
+export function useArtifactFilesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ArtifactFilesQuery, ArtifactFilesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ArtifactFilesQuery, ArtifactFilesQueryVariables>(ArtifactFilesDocument, options);
+        }
+export type ArtifactFilesQueryHookResult = ReturnType<typeof useArtifactFilesQuery>;
+export type ArtifactFilesLazyQueryHookResult = ReturnType<typeof useArtifactFilesLazyQuery>;
+export type ArtifactFilesSuspenseQueryHookResult = ReturnType<typeof useArtifactFilesSuspenseQuery>;
+export type ArtifactFilesQueryResult = Apollo.QueryResult<ArtifactFilesQuery, ArtifactFilesQueryVariables>;
+export const ArtifactTablesDocument = gql`
+    query ArtifactTables($workspaceSlug: String!) {
+  workspace(slug: $workspaceSlug) {
+    database {
+      tables(page: 1, perPage: 100) {
+        items {
+          name
+          count
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useArtifactTablesQuery__
+ *
+ * To run a query within a React component, call `useArtifactTablesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useArtifactTablesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useArtifactTablesQuery({
+ *   variables: {
+ *      workspaceSlug: // value for 'workspaceSlug'
+ *   },
+ * });
+ */
+export function useArtifactTablesQuery(baseOptions: Apollo.QueryHookOptions<ArtifactTablesQuery, ArtifactTablesQueryVariables> & ({ variables: ArtifactTablesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ArtifactTablesQuery, ArtifactTablesQueryVariables>(ArtifactTablesDocument, options);
+      }
+export function useArtifactTablesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ArtifactTablesQuery, ArtifactTablesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ArtifactTablesQuery, ArtifactTablesQueryVariables>(ArtifactTablesDocument, options);
+        }
+export function useArtifactTablesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<ArtifactTablesQuery, ArtifactTablesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ArtifactTablesQuery, ArtifactTablesQueryVariables>(ArtifactTablesDocument, options);
+        }
+export type ArtifactTablesQueryHookResult = ReturnType<typeof useArtifactTablesQuery>;
+export type ArtifactTablesLazyQueryHookResult = ReturnType<typeof useArtifactTablesLazyQuery>;
+export type ArtifactTablesSuspenseQueryHookResult = ReturnType<typeof useArtifactTablesSuspenseQuery>;
+export type ArtifactTablesQueryResult = Apollo.QueryResult<ArtifactTablesQuery, ArtifactTablesQueryVariables>;

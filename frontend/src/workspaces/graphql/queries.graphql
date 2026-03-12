@@ -862,3 +862,32 @@ query WorkspaceConnectionPicker($slug: String!) {
     ...WorkspaceConnectionPicker_workspace
   }
 }
+
+query ArtifactFiles($workspaceSlug: String!, $query: String) {
+  workspace(slug: $workspaceSlug) {
+    bucket {
+      objects(page: 1, prefix: "", perPage: 50, query: $query) {
+        items {
+          key
+          name
+          path
+          type
+          size
+        }
+      }
+    }
+  }
+}
+
+query ArtifactTables($workspaceSlug: String!) {
+  workspace(slug: $workspaceSlug) {
+    database {
+      tables(page: 1, perPage: 100) {
+        items {
+          name
+          count
+        }
+      }
+    }
+  }
+}

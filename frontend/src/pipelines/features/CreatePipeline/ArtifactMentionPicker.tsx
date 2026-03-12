@@ -66,7 +66,7 @@ const ArtifactMentionPicker = ({ workspaceSlug, query, onSelect, onClose }: Prop
       return (filesData?.workspace?.bucket?.objects?.items ?? [])
         .filter((i) => i.name.toLowerCase().includes(lowerQuery) || i.path.toLowerCase().includes(lowerQuery))
         .map((i) => ({
-          id: `file:${i.key}`,
+          id: `file:${i.path}`,
           type: "file" as const,
           label: i.name,
           ref: `file:${i.path}`,
